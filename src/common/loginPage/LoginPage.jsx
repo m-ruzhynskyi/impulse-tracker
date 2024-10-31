@@ -6,13 +6,14 @@ export default function LoginPage() {
   const [loginValue, setLoginValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
   const [isWrong, setIsWrong] = useState(false);
+  const navigate = useNavigate();
 
   function validate() {
     if (!loginValue || !passwordValue) return false;
 
     loginUser(loginValue, passwordValue).then((res) => {
       if (res) {
-        window.location.href = "/";
+        navigate("/");
       } else {
         setIsWrong(true);
         setPasswordValue("");
