@@ -1,0 +1,9 @@
+.header{
+    background-color: var(--mainColorElement);
+    padding: 20px;
+    user-select: none;
+
+    .header__logo {
+        cursor: pointer;
+    }
+}
