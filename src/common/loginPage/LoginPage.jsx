@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { loginUser } from "../../firebase/loginUser";
+import { useNavigate } from "react-router-dom";
 import "../../styles/login/login.css";
 
 export default function LoginPage() {
