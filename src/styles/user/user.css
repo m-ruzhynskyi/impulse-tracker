@@ -9,12 +9,6 @@
   text-align: center;
 }
 
-.user-main__table {
-  display: grid;
-  gap: 8px;
-  width: 100%;
-}
-
 .two-buttons-one {
   display: flex;
   justify-content: flex-start;
@@ -41,9 +35,11 @@
 .user-main__cell {
   text-align: center;
 }
+
 .two-buttons {
   width: 95px;
 }
+
 .user-main__cell--title {
   text-align: left;
   font-weight: bold;

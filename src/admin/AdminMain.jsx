@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { doc, onSnapshot, collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/config";
+import "../styles/admin/styles.css";
 
 const UsersList = () => {
   const [todayData, setTodayData] = useState({
@@ -13,9 +14,9 @@ const UsersList = () => {
     kpNot: 0,
     totalSum: 0,
   });
-  const [workers, setWorkers] = useState([]); // Список сотрудников
+  const [workers, setWorkers] = useState([]);
   const [userIds, setUserIds] = useState([]);
-  const [userDataMap, setUserDataMap] = useState({}); // Состояние для хранения данных каждого пользователя
+  const [userDataMap, setUserDataMap] = useState({});
 
   useEffect(() => {
     const fetchWorkers = async () => {
@@ -26,8 +27,8 @@ const UsersList = () => {
         const loadedWorkers = workerDocs.docs.map((doc) => {
           const data = doc.data();
           return {
-            id: Object.values(data) || "", // Проверка на случай отсутствия id
-            name: Object.keys(data) || "", // Проверка на случай отсутствия имени
+            id: Object.values(data) || "",
+            name: Object.keys(data) || "",
           };
         });
 
@@ -113,33 +114,84 @@ const UsersList = () => {
     return () => {
       unsubscribes.forEach((unsubscribe) => unsubscribe());
     };
-    
   }, [userIds, userDataMap]);
 
   return (
-    <div>
-      <h2>Суммарные данные за сегодня</h2>
-      <p>Deltev: {todayData.deltev}</p>
-      <p>Cris: {todayData.cris}</p>
-      <p>Malte: {todayData.malte}</p>
-      <p>mnSold: {todayData.mnSold}</p>
-      <p>mnNot: {todayData.mnNot}</p>
-      <p>kpSold: {todayData.kpSold}</p>
-      <p>kpNot: {todayData.kpNot}</p>
-      <p>Total Sum: {todayData.totalSum}₴</p>
+    <div className="admin-table">
+      <div className="admin-table__today-summary">
+        <h2 className="admin-table__header">Сумарні дані за сьогодні</h2>
+        <div className="admin-table__row admin-table__row--header">
+          <p className="admin-table__cell admin-table__cell--header">Deltev</p>
+          <p className="admin-table__cell admin-table__cell--header">Cris</p>
+          <p className="admin-table__cell admin-table__cell--header">Molte</p>
+          <p className="admin-table__cell admin-table__cell--header">Сума</p>
+          <p className="admin-table__cell admin-table__cell--header">МН</p>
+          <p className="admin-table__cell admin-table__cell--header">КП</p>
+        </div>
+        <div className="admin-table__row">
+          <p className="admin-table__cell">{todayData.deltev}</p>
+          <p className="admin-table__cell">{todayData.cris}</p>
+          <p className="admin-table__cell">{todayData.malte}</p>
+          <p className="admin-table__cell">{todayData.totalSum}</p>
+          <p className="admin-table__cell">
+            {(
+              todayData.mnSold /
+              (Math.abs(todayData.mnNot) + todayData.mnSold)
+            ).toFixed(2) || 0}
+          </p>
+          <p className="admin-table__cell">
+            {(
+              todayData.kpSold /
+              (Math.abs(todayData.kpNot) + todayData.kpSold)
+            ).toFixed(2) || 0}
+          </p>
+        </div>
+      </div>
 
-      <h2>Данные по каждому пользователю</h2>
+      <h2 className="admin-table__header">Дані по кожному користувачу</h2>
       {Object.entries(userDataMap).map(([userId, data]) => (
-        <div key={userId}>
-          <h3>Пользователь {userId}</h3>
-          <p>Deltev: {data.deltev}</p>
-          <p>Cris: {data.cris}</p>
-          <p>Malte: {data.malte}</p>
-          <p>mnSold: {data.mnSold}</p>
-          <p>mnNot: {data.mnNot}</p>
-          <p>kpSold: {data.kpSold}</p>
-          <p>kpNot: {data.kpNot}</p>
-          <p>Total Sum: {data.totalSum}₴</p>
+        <div key={userId} className="admin-table__user-wrapper">
+          <h3 className="admin-table__user-header">
+            {workers[0]["name"][workers[0]["id"].indexOf(userId)]} :
+          </h3>
+          <div className="admin-table__user-data">
+            <div className="admin-main__row admin-main__header">
+              <p className="admin-main__cell admin-main__cell--title">Title</p>
+              <p className="admin-main__cell">Sold</p>
+              <p className="admin-main__cell">NOT</p>
+              <p className="admin-main__cell">Total</p>
+            </div>
+            <div className="admin-main__row">
+              <p className="admin-main__cell admin-main__cell--title">Deltev</p>
+              <p className="admin-main__cell">{data.deltev}</p>
+              <p className="admin-main__cell">-</p>
+              <p className="admin-main__cell">{data.deltev * 70}</p>
+            </div>
+            <div className="admin-main__row">
+              <p className="admin-main__cell admin-main__cell--title">Cris</p>
+              <p className="admin-main__cell">{data.cris}</p>
+              <p className="admin-main__cell">-</p>
+              <p className="admin-main__cell">{data.cris * 125}</p>
+            </div>
+            <div className="admin-main__row">
+              <p className="admin-main__cell admin-main__cell--title">Molte</p>
+              <p className="admin-main__cell">{data.malte}</p>
+              <p className="admin-main__cell">-</p>
+              <p className="admin-main__cell">{data.malte * 85}</p>
+            </div>
+            <div className="admin-main__row">
+              <p className="admin-main__cell admin-main__cell--title">MН + </p>
+              <p className="admin-main__cell">{data.mnSold}</p>
+              <p className="admin-main__cell">{data.mnNot}</p>
+              <p className="admin-main__cell">-</p>
+            </div>
+            <div className="admin-main__row">
+              <p className="admin-main__cell admin-main__cell--title">КП </p>
+              <p className="admin-main__cell">{data.kpSold}</p>
+              <p className="admin-main__cell">{data.kpNot}</p>
+              <p className="admin-main__cell">-</p>
+            </div>
+          </div>
         </div>
       ))}
     </div>
