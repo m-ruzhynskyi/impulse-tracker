@@ -15,6 +15,7 @@ export default function LoginPage() {
     loginUser(loginValue, passwordValue).then((res) => {
       if (res) {
         navigate("/");
+        localStorage.setItem("user", JSON.stringify(loginValue));
       } else {
         setIsWrong(true);
         setPasswordValue("");

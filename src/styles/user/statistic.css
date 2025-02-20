@@ -57,11 +57,21 @@
         background-color: #f5f5f5;
       }
 
+      .admin-main__sum-data{
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        padding: 15px;
+        font-family: "PoppinsBold", sans-serif;
+        font-size: 17px;
+      }
+
       .admin-main__row {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
         padding: 10px;
         align-items: center;
+        justify-items: center;
         border-bottom: 1px solid #ccc;
 
         .admin-main__cell {

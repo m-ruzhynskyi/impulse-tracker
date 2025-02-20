@@ -13,28 +13,20 @@ export default function UserMain() {
     .padStart(2, "0")}-${date.getFullYear()}`;
 
   const initialState = {
-    deltev: 0,
-    cris: 0,
-    malte: 0,
-    mnSold: 0,
-    mnNot: 0,
-    kpSold: 0,
-    kpNot: 0,
-    totalSum: 0, // New field to store the sum
+    aage: 0,
+    sigfrid: 0,
+    totalSum: 0,
   };
 
   const [state, setState] = useState(initialState);
 
-  // Function to calculate the total sum
   const calculateSum = (updatedState) => {
     return (
-      updatedState.cris * 125 +
-      updatedState.deltev * 70 +
-      updatedState.malte * 85
+      updatedState.aage * 125 +
+      updatedState.sigfrid * 300
     );
   };
 
-  // Function to load data from Firestore if it exists
   const loadData = async () => {
     if (userEmail) {
       const docRef = doc(db, userEmail, dateString);
@@ -43,13 +35,11 @@ export default function UserMain() {
       if (docSnap.exists()) {
         setState(docSnap.data());
       } else {
-        // Initialize Firestore with default values if no document exists
         await setDoc(docRef, initialState);
       }
     }
   };
 
-  // Function to update a single field in Firestore
   const updateFirestore = async (field, value) => {
     if (userEmail) {
       const docRef = doc(db, userEmail, dateString);
@@ -57,7 +47,6 @@ export default function UserMain() {
     }
   };
 
-  // Function to update the total sum in Firestore
   const updateTotalSum = async (newSum) => {
     if (userEmail) {
       const docRef = doc(db, userEmail, dateString);
@@ -67,9 +56,9 @@ export default function UserMain() {
 
   useEffect(() => {
     loadData();
+    // eslint-disable-next-line
   }, []);
 
-  // Unified operation function that updates both local state and Firestore
   const handleOperation = (field, isSold, allowNegative = false) => {
     setState((prevState) => {
       const newValue = isSold
@@ -80,14 +69,12 @@ export default function UserMain() {
 
       const updatedState = { ...prevState, [field]: newValue };
 
-      // Update Firestore for the specific field
       updateFirestore(field, newValue);
 
-      // If the field affects the total sum, recalculate and update
-      if (["cris", "deltev", "malte"].includes(field)) {
+      if (["aage", "sigfrid"].includes(field)) {
         const newSum = calculateSum(updatedState);
-        updateTotalSum(newSum); // Update total sum in Firestore
-        updatedState.totalSum = newSum; // Update total sum locally
+        updateTotalSum(newSum);
+        updatedState.totalSum = newSum;
       }
 
       return updatedState;
@@ -101,121 +88,47 @@ export default function UserMain() {
         <div className="user-main__row user-main__header">
           <p className="user-main__cell user-main__cell--title">Title</p>
           <p className="user-main__cell two-buttons">Sold</p>
-          <p className="user-main__cell">NOT</p>
           <p className="user-main__cell">Total</p>
         </div>
 
         <div className="user-main__row">
-          <p className="user-main__cell user-main__cell--title">Deltev</p>
+          <p className="user-main__cell user-main__cell--title">Aage</p>
           <div className="user-main__cell two-buttons">
             <button
               className="user-main__button"
-              onClick={() => handleOperation("deltev", true)}
+              onClick={() => handleOperation("aage", true)}
             >
               +
             </button>
-            <p className="user-main__count">{state.deltev}</p>
+            <p className="user-main__count">{state.aage}</p>
             <button
               className="user-main__button"
-              onClick={() => handleOperation("deltev", false)}
+              onClick={() => handleOperation("aage", false)}
             >
               -
             </button>
           </div>
-          <p className="user-main__cell">-</p>
-          <p className="user-main__cell">{state.deltev * 70}₴</p>
+          <p className="user-main__cell">{state.aage * 125}₴</p>
         </div>
 
         <div className="user-main__row">
-          <p className="user-main__cell user-main__cell--title">Cris</p>
+          <p className="user-main__cell user-main__cell--title">Sigfrid</p>
           <div className="user-main__cell two-buttons">
             <button
               className="user-main__button"
-              onClick={() => handleOperation("cris", true)}
+              onClick={() => handleOperation("sigfrid", true)}
             >
               +
             </button>
-            <p className="user-main__count">{state.cris}</p>
+            <p className="user-main__count">{state.sigfrid}</p>
             <button
               className="user-main__button"
-              onClick={() => handleOperation("cris", false)}
+              onClick={() => handleOperation("sigfrid", false)}
             >
               -
             </button>
           </div>
-          <p className="user-main__cell">-</p>
-          <p className="user-main__cell">{state.cris * 125}₴</p>
-        </div>
-
-        <div className="user-main__row">
-          <p className="user-main__cell user-main__cell--title">Malte</p>
-          <div className="user-main__cell two-buttons">
-            <button
-              className="user-main__button"
-              onClick={() => handleOperation("malte", true)}
-            >
-              +
-            </button>
-            <p className="user-main__count">{state.malte}</p>
-            <button
-              className="user-main__button"
-              onClick={() => handleOperation("malte", false)}
-            >
-              -
-            </button>
-          </div>
-          <p className="user-main__cell">-</p>
-          <p className="user-main__cell">{state.malte * 85}₴</p>
-        </div>
-
-        <div className="user-main__row">
-          <p className="user-main__cell user-main__cell--title">КП</p>
-          <div className="user-main__cell two-buttons-one">
-            <button
-              className="user-main__button"
-              onClick={() => handleOperation("kpSold", true)}
-            >
-              +
-            </button>
-            <p className="user-main__count">{state.kpSold}</p>
-          </div>
-          <div className="user-main__cell one-button">
-            <p className="user-main__count">{state.kpNot}</p>
-            <button
-              className="user-main__button"
-              onClick={() => handleOperation("kpNot", false, true)}
-            >
-              -
-            </button>
-          </div>
-          <p className="user-main__cell">
-            {state.kpSold + Math.abs(state.kpNot)}
-          </p>
-        </div>
-
-        <div className="user-main__row">
-          <p className="user-main__cell user-main__cell--title">МН</p>
-          <div className="user-main__cell two-buttons-one">
-            <button
-              className="user-main__button"
-              onClick={() => handleOperation("mnSold", true)}
-            >
-              +
-            </button>
-            <p className="user-main__count">{state.mnSold}</p>
-          </div>
-          <div className="user-main__cell one-button">
-            <p className="user-main__count">{state.mnNot}</p>
-            <button
-              className="user-main__button"
-              onClick={() => handleOperation("mnNot", false, true)}
-            >
-              -
-            </button>
-          </div>
-          <p className="user-main__cell">
-            {state.mnSold + Math.abs(state.mnNot)}
-          </p>
+          <p className="user-main__cell">{state.sigfrid * 300}₴</p>
         </div>
 
         <p className="user-totalSum" colSpan="3">

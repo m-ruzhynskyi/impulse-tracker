@@ -1,11 +1,13 @@
-import LoginPage from "./common/loginPage/LoginPage";
+import LoginPage from "./Components/loginPage/LoginPage";
 import Header from "./Components/Header/Header";
 import { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { auth } from "./firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
-import AdminMain from "./admin/AdminMain";
 import UserMain from "./user/UserMain";
+import Statistic from "./user/Statistic";
+import Plan from "./user/Plan";
+import Settings from "./user/Settings";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -30,7 +32,10 @@ function App() {
       <Header />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/" element={user === '000000' ? <AdminMain/>:<UserMain/> }/>
+        <Route path="/" element={user ? <UserMain /> : <LoginPage />} />
+        <Route path="/stat" element={user ? <Statistic /> : <LoginPage />} />
+        <Route path="/plan" element={user ? <Plan /> : <LoginPage />} />
+        <Route path="/settings" element={user ? <Settings /> : <LoginPage />} />
       </Routes>
     </>
   );
