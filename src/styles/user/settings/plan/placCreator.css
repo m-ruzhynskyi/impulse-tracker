@@ -1,0 +1,55 @@
+.plan-creator {
+  font-family: 'PoppinsRegular', serif;
+  font-size: 21px;
+
+  .plan-creator__days-list {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin: 30px 0;
+
+    .plan-creator__day-item {
+      width: 190px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      border-radius: 10px;
+      border: 1px solid var(--borderColor);
+      padding: 15px;
+
+      .plan-creator__date {
+        font-weight: bold;
+      }
+
+      input {
+        width: 85px;
+        border: none;
+        background: none;
+        text-align: center;
+        font-size: 18px;
+
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        &::placeholder {
+          font-size: 14px;
+        }
+      }
+    }
+
+  }
+
+  .plan-creator__day__sum {
+    text-align: center;
+    font-family: "PoppinsMedium", serif;
+    margin-top: 50px;
+  }
+}
+

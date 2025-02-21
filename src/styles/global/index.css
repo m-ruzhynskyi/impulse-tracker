@@ -62,3 +62,8 @@ h1 {
 .menuOpenedBody {
   overflow: hidden;
 }
+
+section {
+  max-width: 1440px;
+  margin: 50px auto;
+}

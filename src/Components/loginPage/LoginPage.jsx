@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { loginUser } from "../../firebase/loginUser";
-import { useNavigate } from "react-router-dom";
+import {useState} from "react";
+import {loginUser} from "../../firebase/loginUser";
+import {useNavigate} from "react-router-dom";
 import "../../styles/login/login.css";
 
 export default function LoginPage() {
   const [loginValue, setLoginValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
   const [isWrong, setIsWrong] = useState(false);
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   function validate() {
     if (!loginValue || !passwordValue) return false;
@@ -22,6 +22,7 @@ export default function LoginPage() {
       }
     });
   }
+
   return (
     <main className="login">
       <h1 className="login__title">Authorization</h1>

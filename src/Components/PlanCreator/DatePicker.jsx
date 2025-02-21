@@ -4,7 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../../styles/user/settings/plan/datePicker.css";
 import dateFormatter from "../../functions/dateFormatter";
 
-export default function RenderDatePicker({ setQuantOfDays }) {
+export default function RenderDatePicker({ setQuantOfDays, setDayToStart }) {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -21,6 +21,7 @@ export default function RenderDatePicker({ setQuantOfDays }) {
     if (start && end) {
       setIsOpen(false);
       setQuantOfDays(Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1);
+      setDayToStart(start);
     }
   };
 
