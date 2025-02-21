@@ -1,0 +1,93 @@
+.date-picker {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  position: relative;
+  font-family: 'PoppinsMedium', serif;
+  font-size: 18px;
+
+  .render-date-picker-wrapper {
+    position: relative;
+    width: 241px;
+
+    .date-picker-trigger-btn {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid var(--borderColor);
+      border-radius: 4px;
+      background: var(--bgColor);
+      color: var(--mainColorText);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 16px;
+
+
+      &:hover {
+        border-color: #0051a3;
+        box-shadow: 0 2px 6px var(--mainColorElement);
+      }
+    }
+
+    .calendar {
+      margin-top: 8px;
+      border: 1px solid var(--borderColor);
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      background: var(--bgColor);
+      position: fixed;
+      z-index: 100;
+    }
+
+    .selected-range-display {
+      margin-top: 12px;
+      padding: 10px;
+      border: 1px solid var(--borderColor);
+      border-radius: 4px;
+      background: var(--bgColor);
+      text-align: center;
+      font-size: 14px;
+
+
+      span {
+        color: var(--mainColorText);
+        font-weight: 500;
+      }
+
+      .separator {
+        margin: 0 8px;
+        color: var(--secondTextColor);
+      }
+    }
+
+    .placeholder {
+      color: var(--secondTextColor);
+      font-style: italic;
+    }
+
+    .react-datepicker {
+      border: none;
+      font-family: 'PoppinsRegular', sans-serif;
+
+      .react-datepicker__day--selected {
+        background-color: var(--mainColorElement) !important;
+        color: var(--bgColor) !important;
+      }
+
+      .react-datepicker__day--in-range {
+        background-color: var(--bgColor);
+        color: var(--mainColorElement);
+      }
+
+      .react-datepicker__current-month {
+        color: var(--mainColorElement);
+        font-weight: 500;
+        padding-bottom: 8px;
+      }
+    }
+  }
+
+
+}
