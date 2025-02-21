@@ -29,7 +29,6 @@ const Statistic = () => {
 
         setWorkers(loadedWorkers);
         setUserIds(loadedWorkers[0].id);
-        console.log("Сотрудники загружены:", loadedWorkers);
       } catch (error) {
         console.error("Ошибка при загрузке данных сотрудников:", error);
       }
@@ -67,8 +66,6 @@ const Statistic = () => {
           newTotalData.aage += userData.aage || 0;
           newTotalData.sigfrid += userData.sigfrid || 0;
           newTotalData.totalSum += userData.totalSum || 0;
-        } else {
-          console.log(`Документ данных для пользователя ${userId} за ${today} не найден.`);
         }
       }
 
@@ -113,11 +110,15 @@ const Statistic = () => {
               <p className="admin-main__cell">{data.aage * 125}</p>
             </div>
             <div className="admin-main__row">
-              <p className="admin-main__cell admin-main__cell--title">Sigfrid</p>
+              <p className="admin-main__cell admin-main__cell--title">
+                Sigfrid
+              </p>
               <p className="admin-main__cell">{data.sigfrid}</p>
               <p className="admin-main__cell">{data.sigfrid * 300}</p>
             </div>
-            <p className={'admin-main__sum-data'}>Сума: {data.sigfrid * 300 + data.aage * 125}</p>
+            <p className={"admin-main__sum-data"}>
+              Сума: {data.sigfrid * 300 + data.aage * 125}
+            </p>
           </div>
         </div>
       ))}

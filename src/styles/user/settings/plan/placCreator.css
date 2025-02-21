@@ -1,6 +1,9 @@
 .plan-creator {
   font-family: 'PoppinsRegular', serif;
   font-size: 21px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 
   .plan-creator__days-list {
     width: 100%;
@@ -12,7 +15,7 @@
     margin: 30px 0;
 
     .plan-creator__day-item {
-      width: 190px;
+      width: 195px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -20,9 +23,16 @@
       border-radius: 10px;
       border: 1px solid var(--borderColor);
       padding: 15px;
+      background-color: #f9f9f9;
+      transition: box-shadow 0.3s ease;
+
+      &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
 
       .plan-creator__date {
         font-weight: bold;
+        color: #333;
       }
 
       input {
@@ -31,6 +41,7 @@
         background: none;
         text-align: center;
         font-size: 18px;
+        color: #555;
 
         &::-webkit-outer-spin-button,
         &::-webkit-inner-spin-button {
@@ -40,16 +51,60 @@
 
         &::placeholder {
           font-size: 14px;
+          color: #999;
         }
       }
     }
-
   }
 
-  .plan-creator__day__sum {
-    text-align: center;
-    font-family: "PoppinsMedium", serif;
+  .plan-creator__footer {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
     margin-top: 50px;
+
+    .plan-creator__footer__sum {
+      text-align: center;
+      font-family: "PoppinsMedium", serif;
+      font-size: 24px;
+      color: #333;
+    }
+
+    .plan-creator__footer__save-button {
+      background-color: var(--buttonBgPrimary) !important;
+      color: var(--buttonTextPrimary) !important;
+      font-family: 'PoppinsMedium', sans-serif !important;
+      font-weight: 600 !important;
+      text-transform: uppercase !important;
+      letter-spacing: .5px !important;
+
+      padding: 12px 32px !important;
+      border-radius: 4px !important;
+      border: 2px solid var(--buttonBorderPrimary) !important;
+
+      transition: all 0.2s ease-in-out !important;
+
+      box-shadow: 0 2px 4px var(--shadowColorPrimary) !important;
+
+      &:hover {
+        background-color: var(--buttonBgHover) !important;
+        border-color: var(--buttonBorderHover) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px var(--shadowColorHover) !important;
+      }
+
+      &:disabled {
+        background-color: var(--buttonBgDisabled) !important;
+        border-color: var(--buttonBorderDisabled) !important;
+        color: var(--buttonTextDisabled) !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px var(--shadowColorActive) !important;
+      }
+    }
   }
 }
-
