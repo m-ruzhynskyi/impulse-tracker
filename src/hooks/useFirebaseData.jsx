@@ -81,6 +81,7 @@ export const useFirebaseData = (quantOfDays, dayToStart) => {
 
   useEffect(() => {
     if (quantOfDays > 0) loadData();
+    // eslint-disable-next-line
   }, [quantOfDays, dayToStart]);
 
   return {

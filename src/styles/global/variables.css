@@ -8,15 +8,19 @@
   --borderColor: #ccc;
   --accentColor: #ffb20a;
 
+  --buttonBgDisabled: #E5E7EB;
+  --buttonBorderDisabled: #E5E7EB;
+  --buttonTextDisabled: #6B7280;
+
   --buttonBgPrimary: #00345B;
   --buttonTextPrimary: #FFFFFF;
   --buttonBorderPrimary: #00345B;
   --buttonBgHover: #2D4E6A;
   --buttonBorderHover: #2D4E6A;
-  --buttonBgDisabled: #E5E7EB;
-  --buttonBorderDisabled: #E5E7EB;
-  --buttonTextDisabled: #6B7280;
-  --shadowColorPrimary: rgba(0, 52, 91, 0.15);
-  --shadowColorHover: rgba(45, 78, 106, 0.15);
-  --shadowColorActive: rgba(0, 52, 91, 0.1);
+
+  --saveButtonBgPrimary: #1b6c1e;
+  --saveButtonTextPrimary: #FFFFFF;
+  --saveButtonBorderPrimary: #184119;
+  --saveButtonBgHover: #66BB6A;
+  --saveButtonBorderHover: #4CAF50;
 }

@@ -15,6 +15,7 @@ export const useDateRange = () => {
       const q = query(impulseRef, orderBy("__name__"));
       const snapshot = await getDocs(q);
       const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
       let activeRange = null;
       const ranges = [];
@@ -24,8 +25,22 @@ export const useDateRange = () => {
         ranges.push(range);
       });
 
-      activeRange = ranges.find((r) => today >= r.start && today <= r.end);
-      if (!activeRange) activeRange = ranges.find((r) => r.start > today);
+      const activeRanges = ranges.filter(
+        (r) => today >= r.start && today <= r.end,
+      );
+
+      if (activeRanges.length > 0) {
+        activeRange = activeRanges.reduce((prev, current) =>
+          current.start > prev.start ? current : prev,
+        );
+      } else {
+        const futureRanges = ranges.filter((r) => r.start > today);
+        if (futureRanges.length > 0) {
+          activeRange = futureRanges.reduce((prev, current) =>
+            current.start < prev.start ? current : prev,
+          );
+        }
+      }
 
       if (activeRange) {
         const days =
@@ -39,7 +54,6 @@ export const useDateRange = () => {
       console.error("Error loading ranges:", error);
     }
   };
-
   useEffect(() => {
     findActiveRange();
   }, []);

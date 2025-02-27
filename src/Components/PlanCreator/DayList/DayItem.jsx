@@ -3,7 +3,7 @@ import React from "react";
 const DayItem = ({ date, value, onInputChange }) => {
   return (
     <div className="plan-creator__day-item">
-      <span className="plan-creator__date">{date}</span>
+      <p className="plan-creator__date">{date}</p>
       <input
         type="number"
         value={value}

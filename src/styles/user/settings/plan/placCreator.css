@@ -3,7 +3,6 @@
   font-size: 21px;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
 
   .plan-creator__days-list {
     width: 100%;
@@ -26,10 +25,6 @@
       background-color: #f9f9f9;
       transition: box-shadow 0.3s ease;
 
-      &:hover {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
-
       .plan-creator__date {
         font-weight: bold;
         color: #333;
@@ -42,17 +37,7 @@
         text-align: center;
         font-size: 18px;
         color: #555;
-
-        &::-webkit-outer-spin-button,
-        &::-webkit-inner-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
-        }
-
-        &::placeholder {
-          font-size: 14px;
-          color: #999;
-        }
+        cursor: pointer;
       }
     }
   }
@@ -71,8 +56,8 @@
     }
 
     .plan-creator__footer__save-button {
-      background-color: var(--buttonBgPrimary) !important;
-      color: var(--buttonTextPrimary) !important;
+      background-color: var(--saveButtonBgPrimary) !important;
+      color: var(--saveButtonTextPrimary) !important;
       font-family: 'PoppinsMedium', sans-serif !important;
       font-weight: 600 !important;
       text-transform: uppercase !important;
@@ -80,17 +65,15 @@
 
       padding: 12px 32px !important;
       border-radius: 4px !important;
-      border: 2px solid var(--buttonBorderPrimary) !important;
+      border: 2px solid var(--saveButtonBorderPrimary) !important;
 
       transition: all 0.2s ease-in-out !important;
-
-      box-shadow: 0 2px 4px var(--shadowColorPrimary) !important;
+      box-shadow: none !important;
 
       &:hover {
-        background-color: var(--buttonBgHover) !important;
-        border-color: var(--buttonBorderHover) !important;
+        background-color: var(--saveButtonBgHover) !important;
+        border-color: var(--saveButtonBorderHover) !important;
         transform: translateY(-1px);
-        box-shadow: 0 3px 6px var(--shadowColorHover) !important;
       }
 
       &:disabled {
@@ -103,7 +86,6 @@
 
       &:active {
         transform: translateY(0);
-        box-shadow: 0 2px 4px var(--shadowColorActive) !important;
       }
     }
   }
