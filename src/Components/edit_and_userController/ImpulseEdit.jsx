@@ -83,23 +83,23 @@ export default function ImpulseEdit() {
   }, [impulsesInfo]);
 
   return (
-    <div className={"impulse-edit__wrapper"}>
-      <div className={"impulse-edit"}>
-        <div className={"impulse-edit__groups__wrapper"}>
+    <div className="edit-form__wrapper">
+      <div className="edit-form">
+        <div className="edit-form__groups__wrapper">
           {impulsesInfo.map(({ name, price }, index) => (
-            <div className={"impulse-edit__group"} key={index}>
+            <div className="edit-form__group" key={index}>
               <input
                 type="text"
-                className={"impulse-edit__group__input"}
-                placeholder={"Назва..."}
+                className="edit-form__group__input"
+                placeholder="Назва..."
                 name="name"
                 value={name}
                 onChange={(e) => handleInputChange(e, index)}
               />
               <input
                 type="number"
-                className={"impulse-edit__group__input"}
-                placeholder={"Ціна..."}
+                className="edit-form__group__input"
+                placeholder="Ціна..."
                 name="price"
                 value={price}
                 onChange={(e) => handleInputChange(e, index)}
@@ -107,16 +107,16 @@ export default function ImpulseEdit() {
             </div>
           ))}
         </div>
-        <div className={"impulse-edit__button-wrapper"}>
+        <div className="edit-form__button-wrapper">
           <Button
-            className="impulse-edit__button__add"
+            className="edit-form__button__add"
             variant="contained"
             onClick={addNewImpulse}
           >
             Додати ще
           </Button>
           <Button
-            className="impulse-edit__button__save"
+            className="edit-form__button__save"
             disabled={disableButton}
             variant="contained"
             onClick={handleSave}
