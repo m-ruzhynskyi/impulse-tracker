@@ -65,7 +65,7 @@ const PlanCreator = () => {
         onClose={() => setSnackbarOpen(false)}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert severity="success" sx={{ width: "100%" }}>
+        <Alert severity="success" variant="filled" sx={{ width: "100%" }}>
           Дані успішно збережено!
         </Alert>
       </Snackbar>

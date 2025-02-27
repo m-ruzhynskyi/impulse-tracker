@@ -131,7 +131,11 @@ export default function ImpulseEdit() {
           onClose={() => setSnackbarOpen(false)}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
-          <Alert severity={snackbarSeverity} sx={{ width: "100%" }}>
+          <Alert
+            severity={snackbarSeverity}
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
             {snackbarMessage}
           </Alert>
         </Snackbar>

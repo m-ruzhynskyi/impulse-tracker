@@ -5,6 +5,7 @@ import { getRangeId, formatDate } from "../functions/dateUtils";
 
 export const useFirebaseData = (quantOfDays, dayToStart) => {
   const [values, setValues] = useState({});
+  const [facts, setFacts] = useState({});
   const [summary, setSummary] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
@@ -33,12 +34,15 @@ export const useFirebaseData = (quantOfDays, dayToStart) => {
         const daysCol = collection(rangeRef, "days");
         const daysSnapshot = await getDocs(daysCol);
         const data = {};
+        const facts = {};
 
         daysSnapshot.forEach((doc) => {
           data[doc.id] = doc.data().goal.toString();
+          facts[doc.id] = doc.data().fact.toString();
         });
 
         setValues(data);
+        setFacts(facts);
         setSummary(calculateSum(data));
       } else {
         setValues({});
@@ -86,6 +90,7 @@ export const useFirebaseData = (quantOfDays, dayToStart) => {
 
   return {
     values,
+    facts,
     summary,
     snackbarOpen,
     setSnackbarOpen,
