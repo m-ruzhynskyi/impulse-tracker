@@ -1,0 +1,103 @@
+/* Minimal User Ranking */
+.user-ranking {
+  background: #fff;
+  max-width: 600px;
+  margin: 1rem auto;
+  font-family: 'Helvetica Neue', sans-serif;
+}
+
+.ranking-header {
+  padding: 1.5rem 1.5rem 0.5rem;
+  text-align: center;
+}
+
+.ranking-title {
+  color: var(--mainColorText);
+  margin: 0 0 0.25rem;
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.ranking-dates {
+  display: block;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.ranking-list {
+  padding: 0 1.5rem 1.5rem;
+}
+
+.list-header {
+  display: grid;
+  grid-template-columns: 50px 1fr 100px;
+  padding: 0.75rem 0;
+  border-bottom: 2px solid var(--mainColorElement);
+  color: var(--mainColorText);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.list-item {
+  display: grid;
+  grid-template-columns: 50px 1fr 100px;
+  align-items: center;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--borderColor);
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.place-number {
+  color: #666;
+  font-feature-settings: 'tnum';
+  font-variant-numeric: tabular-nums;
+}
+
+.user-name {
+  font-weight: 400;
+}
+
+.sales-amount {
+  font-weight: 500;
+  color: var(--mainColorText);
+}
+
+.first-place {
+  background: rgba(38, 68, 140, 0.03);
+  border-radius: 4px;
+  padding-left: 1rem;
+  margin-left: -1rem;
+  width: calc(100% + 2rem);
+}
+
+.first-place .place-number {
+  color: var(--mainColorElement);
+  font-weight: 600;
+}
+
+.first-place .sales-amount {
+  color: var(--mainColorElement);
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .user-ranking {
+    margin: 0.5rem;
+  }
+
+  .ranking-header {
+    padding: 1rem 1rem 0.5rem;
+  }
+
+  .ranking-list {
+    padding: 0 1rem 1rem;
+  }
+
+  .list-header,
+  .list-item {
+    grid-template-columns: 40px 1fr 80px;
+  }
+}

@@ -39,6 +39,11 @@ export default function Menu() {
               </NavLink>
             </li>
             <li>
+              <NavLink to={"/leaders"} onClick={() => menuController(true)}>
+                Лідери
+              </NavLink>
+            </li>
+            <li>
               <NavLink to={"/stat"} onClick={() => menuController(true)}>
                 Статистика
               </NavLink>

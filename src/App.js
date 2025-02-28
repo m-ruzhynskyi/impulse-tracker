@@ -8,6 +8,7 @@ import UserMain from "./user/UserMain";
 import Statistic from "./user/Statistic";
 import Plan from "./user/Plan";
 import Settings from "./user/Settings";
+import Leaders from "./user/Leaders";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -33,6 +34,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={user ? <UserMain /> : <LoginPage />} />
+        <Route path="/leaders" element={user ? <Leaders /> : <LoginPage />} />
         <Route path="/stat" element={user ? <Statistic /> : <LoginPage />} />
         <Route path="/plan" element={user ? <Plan /> : <LoginPage />} />
         <Route path="/settings" element={user ? <Settings /> : <LoginPage />} />

@@ -1,0 +1,52 @@
+.plan {
+  padding: 20px;
+  background-color: var(--bgColor);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.plan__header {
+  color: var(--mainColorText);
+  margin-bottom: 20px;
+}
+
+.plan__dates-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.plan__date-card {
+  background-color: var(--secondTextColor);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  flex: 1 1 calc(33.333% - 20px);
+  min-width: 200px;
+}
+
+.plan__date-title {
+  color: var(--mainColorText);
+  margin-bottom: 10px;
+}
+
+.plan__data-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.plan__label {
+  color: var(--mainColorText);
+  font-weight: bold;
+}
+
+.plan__value {
+  color: var(--elementColor);
+}
+
+.plan__summary {
+  margin-top: 20px;
+  color: var(--mainColorText);
+  font-size: 1.2em;
+}

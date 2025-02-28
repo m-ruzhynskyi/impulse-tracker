@@ -2,6 +2,8 @@ import "../styles/user/user.css";
 import { useState, useEffect } from "react";
 import { auth, db } from "../firebase/config";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { useDateRange } from "../hooks/useDateRange";
+import { formatDate, getRangeId } from "../functions/dateUtils";
 
 export default function UserMain() {
   const userEmail = auth.currentUser?.email.split("@")[0];
@@ -17,6 +19,9 @@ export default function UserMain() {
   const [totalSum, setTotalSum] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const { quantOfDays, dayToStart, startDate, endDate } = useDateRange();
+  const [factUpdated, setFactUpdated] = useState(false);
 
   const loadProducts = async () => {
     try {
@@ -106,6 +111,51 @@ export default function UserMain() {
     }, 0);
   };
 
+  const updateFactInFirebase = async (change) => {
+    if (!dayToStart || quantOfDays <= 0) return;
+
+    try {
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0);
+
+      if (currentDate < startDate || currentDate > endDate) {
+        console.log("Current date is outside the active range");
+        return;
+      }
+
+      const formattedDate = formatDate(
+        dayToStart,
+        Math.floor((currentDate - dayToStart) / 86400000),
+      );
+      const rangeId = getRangeId(quantOfDays, dayToStart);
+
+      if (!rangeId) {
+        console.error("Unable to determine range ID");
+        return;
+      }
+
+      const factRef = doc(db, "impulse", rangeId, "days", formattedDate);
+      const factDoc = await getDoc(factRef);
+
+      let currentFact = 0;
+
+      if (factDoc.exists()) {
+        currentFact = factDoc.data().fact || 0;
+      }
+
+      const newFact = currentFact + change;
+
+      await updateDoc(factRef, {
+        fact: newFact,
+      });
+
+      console.log(`Updated fact for ${formattedDate} to ${newFact}`);
+      setFactUpdated(true);
+    } catch (error) {
+      console.error("Error updating fact:", error);
+    }
+  };
+
   const updateFirestore = async (updatedCounts, newSum) => {
     if (userEmail) {
       try {
@@ -124,12 +174,21 @@ export default function UserMain() {
   const handleOperation = (productName, isSold, allowNegative = false) => {
     setProductCounts((prevCounts) => {
       const currentCount = prevCounts[productName] || 0;
+      const product = products.find((p) => p.name === productName);
+
+      if (!product) return prevCounts;
 
       const newCount = isSold
         ? currentCount + 1
         : allowNegative
           ? currentCount - 1
           : Math.max(0, currentCount - 1);
+
+      const countChange = newCount - currentCount;
+
+      if (countChange !== 0) {
+        updateFactInFirebase(countChange * product.price);
+      }
 
       const updatedCounts = {
         ...prevCounts,
@@ -144,6 +203,16 @@ export default function UserMain() {
       return updatedCounts;
     });
   };
+
+  useEffect(() => {
+    if (factUpdated) {
+      const timer = setTimeout(() => {
+        setFactUpdated(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [factUpdated]);
 
   if (isLoading) {
     return <div className="user-main">Loading...</div>;
