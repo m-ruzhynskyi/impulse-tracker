@@ -12,7 +12,6 @@ const Statistic = () => {
   const [userDataMap, setUserDataMap] = useState({});
   const [products, setProducts] = useState({});
 
-  // Загрузка списка товаров и цен
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -23,7 +22,6 @@ const Statistic = () => {
           const productData = docSnapshot.data();
           const formattedProducts = {};
 
-          // Преобразование формата "Bornholm"375" в объект {name: "Bornholm", price: 375}
           Object.entries(productData).forEach(([key, value]) => {
             const productName = key;
             const productPrice = parseInt(value);
@@ -40,7 +38,6 @@ const Statistic = () => {
     fetchProducts();
   }, []);
 
-  // Загрузка списка работников
   useEffect(() => {
     const fetchWorkers = async () => {
       try {
@@ -65,7 +62,6 @@ const Statistic = () => {
     fetchWorkers();
   }, []);
 
-  // Загрузка данных пользователей
   useEffect(() => {
     if (userIds.length === 0 || Object.keys(products).length === 0) return;
 
@@ -80,7 +76,6 @@ const Statistic = () => {
       let newUserDataMap = {};
       let newTotalData = { totalSum: 0 };
 
-      // Инициализируем счетчики для каждого продукта
       Object.keys(products).forEach((productName) => {
         newTotalData[productName] = 0;
       });
@@ -98,12 +93,10 @@ const Statistic = () => {
             totalSum: userTotalSum,
           };
 
-          // Обрабатываем все продукты для пользователя
           Object.keys(products).forEach((productName) => {
             const count = productCounts[productName] || 0;
             calculatedUserData[productName] = count;
 
-            // Добавляем к общей сумме
             newTotalData[productName] += count;
           });
 
@@ -119,7 +112,6 @@ const Statistic = () => {
     fetchUserData();
   }, [userIds, products]);
 
-  // Получение имени работника по ID
   const getWorkerName = (userId) => {
     for (const worker of workers) {
       const index = worker.id.indexOf(userId);
@@ -130,7 +122,6 @@ const Statistic = () => {
     return "Неизвестный";
   };
 
-  // Рассчет стоимости проданных товаров
   const calculateProductTotal = (productName, count) => {
     return (products[productName] || 0) * count;
   };
