@@ -11,7 +11,6 @@ export default function UserRanking() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Отримуємо дані активного проміжку часу за допомогою useDateRange
   const { quantOfDays, dayToStart } = useDateRange();
 
   useEffect(() => {
@@ -19,7 +18,6 @@ export default function UserRanking() {
       try {
         setIsLoading(true);
 
-        // Завантаження даних користувачів із Firestore
         const workersDocRef = doc(db, "info", "workers", "data", "workers");
         const workersSnap = await getDoc(workersDocRef);
         if (!workersSnap.exists()) {
@@ -47,8 +45,8 @@ export default function UserRanking() {
             }
           }
           ranking.push({
-            workerId: workersData[workerId], // ID працівника
-            name: workerId, // Відображаємо ID працівника
+            workerId: workersData[workerId],
+            name: workerId,
             totalSales: userTotal,
           });
         }
