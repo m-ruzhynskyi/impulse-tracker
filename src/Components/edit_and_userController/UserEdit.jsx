@@ -49,7 +49,6 @@ export default function ImpulseEdit() {
   };
 
   const addNewImpulse = () => {
-    if (impulsesInfo.length >= 4) return;
     setImpulsesInfo((prev) => [...prev, { name: "", key: "" }]);
   };
 
