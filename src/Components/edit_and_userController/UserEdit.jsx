@@ -111,7 +111,7 @@ export default function ImpulseEdit() {
             <div className="edit-form__group" key={index}>
               <input
                 type="text"
-                className="edit-form__group__input"
+                className="edit-form__group__input edit-form__group__input-user"
                 placeholder="Ім'я..."
                 name="name"
                 value={name}
@@ -119,7 +119,7 @@ export default function ImpulseEdit() {
               />
               <input
                 type="number"
-                className="edit-form__group__input"
+                className="edit-form__group__input edit-form__group__input-user"
                 placeholder="ID..."
                 name="key"
                 value={key}

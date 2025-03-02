@@ -14,7 +14,7 @@
     margin: 30px 0;
 
     .plan-creator__day-item {
-      width: 195px;
+      width: 201px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -87,6 +87,12 @@
       &:active {
         transform: translateY(0);
       }
+    }
+
+    @media (max-width: 450px) {
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 20px;
     }
   }
 }

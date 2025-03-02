@@ -1,11 +1,11 @@
 #menuToggle
 {
   display: block;
-  position: fixed;
+  position: absolute;
   top: 32px;
   right: 50px;
 
-  z-index: 1;
+  z-index: 10;
 
   -webkit-user-select: none;
   user-select: none;
@@ -93,7 +93,7 @@
 {
   position: absolute;
   max-width: 500px;
-  width: 400px;
+  width: 440px;
   height: 100vh;
   margin: 0 0 0 -50px;
   padding: 125px 50px 50px;
@@ -104,7 +104,7 @@
   -webkit-font-smoothing: antialiased;
 
   transform-origin: 0 0;
-  transform: translate(0, 0);
+  transform: translate(300px, 0);
 
   transition: background-color 0.35s cubic-bezier(0.77,0.2,0.05,1.0), transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
 }

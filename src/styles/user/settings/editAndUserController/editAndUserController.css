@@ -40,6 +40,7 @@
           transition: box-shadow 0.3s ease;
           font-size: 18px;
           cursor: pointer;
+          text-align: center;
 
           &:nth-child(2) {
             width: 30%;
@@ -49,6 +50,10 @@
             font-weight: bold;
           }
         }
+      }
+
+      .edit-form__group__input-user {
+        width: 50% !important;
       }
     }
 
