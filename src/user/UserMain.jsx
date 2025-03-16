@@ -31,7 +31,6 @@ export default function UserMain() {
 
       if (docSnap.exists()) {
         const data = docSnap.data();
-        console.log("Получены данные из Firebase:", data);
 
         const productList = Object.entries(data)
           .map(([name, priceStr]) => {
@@ -39,8 +38,6 @@ export default function UserMain() {
             return { name, price };
           })
           .filter((product) => !isNaN(product.price));
-
-        console.log("Распарсенные товары:", productList);
 
         setProducts(productList);
 
@@ -119,7 +116,6 @@ export default function UserMain() {
       currentDate.setHours(0, 0, 0, 0);
 
       if (currentDate < startDate || currentDate > endDate) {
-        console.log("Current date is outside the active range");
         return;
       }
 
@@ -149,7 +145,6 @@ export default function UserMain() {
         fact: newFact,
       });
 
-      console.log(`Updated fact for ${formattedDate} to ${newFact}`);
       setFactUpdated(true);
     } catch (error) {
       console.error("Error updating fact:", error);

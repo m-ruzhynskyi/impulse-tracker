@@ -78,7 +78,6 @@ export default function ImpulseEdit() {
         const password = impulse.key;
         try {
           await createUserWithEmailAndPassword(auth, email, password);
-          console.log(`Користувач ${email} створений`);
         } catch (error) {
           if (error.code !== "auth/email-already-in-use") throw error;
         }
