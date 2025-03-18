@@ -9,6 +9,7 @@ import Statistic from "./user/Statistic";
 import Plan from "./user/Plan";
 import Settings from "./user/Settings";
 import Leaders from "./user/Leaders";
+import ComplexStat from "./Components/ComplexStat";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -38,6 +39,7 @@ function App() {
         <Route path="/stat" element={user ? <Statistic /> : <LoginPage />} />
         <Route path="/plan" element={user ? <Plan /> : <LoginPage />} />
         <Route path="/settings" element={user ? <Settings /> : <LoginPage />} />
+        <Route path="/test" element={user ? <ComplexStat /> : <LoginPage />} />
       </Routes>
     </>
   );

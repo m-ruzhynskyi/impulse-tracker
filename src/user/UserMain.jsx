@@ -235,18 +235,18 @@ export default function UserMain() {
               <div className="user-main__cell two-buttons">
                 <button
                   className="user-main__button"
-                  onClick={() => handleOperation(product.name, true)}
+                  onClick={() => handleOperation(product.name, false)}
                 >
-                  +
+                  -
                 </button>
                 <p className="user-main__count">
                   {productCounts[product.name] || 0}
                 </p>
                 <button
                   className="user-main__button"
-                  onClick={() => handleOperation(product.name, false)}
+                  onClick={() => handleOperation(product.name, true)}
                 >
-                  -
+                  +
                 </button>
               </div>
               <p className="user-main__cell">
