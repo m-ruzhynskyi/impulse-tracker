@@ -86,7 +86,7 @@ export default function UserRanking() {
 
       <div className="ranking-list">
         <div className="list-header">
-          <span>Місце</span>
+          <span>№</span>
           <span>Працівник</span>
           <span>Сума</span>
         </div>

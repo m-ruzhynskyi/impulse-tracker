@@ -1,10 +1,9 @@
-import "../styles/user/test.css";
-import { useState, useEffect } from "react";
-import { doc, getDoc, setDoc, collection } from "firebase/firestore";
-import { auth, db } from "../firebase/config";
+import "../styles/user/complexStat.css";
+import {useState, useEffect} from "react";
+import {doc, getDoc, setDoc} from "firebase/firestore";
+import {auth, db} from "../firebase/config";
 
 export default function ComplexStat() {
-  // Format current date as DD-MM-YYYY
   const date = new Date();
   const dateString = `${date.getDate().toString().padStart(2, "0")}-${(
     date.getMonth() + 1
@@ -12,11 +11,9 @@ export default function ComplexStat() {
     .toString()
     .padStart(2, "0")}-${date.getFullYear()}`;
 
-  // State for complex data
   const [complexes, setComplexes] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
-  // Get user ID from email
   const userId = auth.currentUser?.email?.split("@")[0];
 
   useEffect(() => {
@@ -25,27 +22,23 @@ export default function ComplexStat() {
 
       setIsLoading(true);
       try {
-        // First, check if today's data exists
         const todayDocRef = doc(db, userId, 'complexes', 'data', dateString);
         const todaySnapshot = await getDoc(todayDocRef);
 
         if (todaySnapshot.exists()) {
-          // If data exists for today, use it
           setComplexes(todaySnapshot.data());
         } else {
-          // If no data for today, fetch complex names and create initial data
           const complexesDocRef = doc(db, 'info', 'complexes');
           const complexesSnapshot = await getDoc(complexesDocRef);
 
           if (complexesSnapshot.exists()) {
             const complexData = complexesSnapshot.data();
             const complexNames = {
-              [complexData.kp]: { sold: 0, not: 0, sum: "0%" },
-              [complexData.mn]: { sold: 0, not: 0, sum: "0%" },
-              [complexData.sp]: { sold: 0, not: 0, sum: "0%" }
+              [complexData.kp]: {sold: 0, not: 0, sum: "0%"},
+              [complexData.mn]: {sold: 0, not: 0, sum: "0%"},
+              [complexData.sp]: {sold: 0, not: 0, sum: "0%"}
             };
 
-            // Save initial data to Firestore
             await setDoc(todayDocRef, complexNames);
             setComplexes(complexNames);
           }
@@ -60,11 +53,9 @@ export default function ComplexStat() {
     initializeData();
   }, [userId, dateString]);
 
-  // Calculate percentage and update Firestore
   const updateFirestore = async (newComplexes) => {
     if (!userId) return;
 
-    // Calculate sum percentages for each complex
     const updatedComplexes = {};
 
     Object.entries(newComplexes).forEach(([complex, data]) => {
@@ -78,7 +69,6 @@ export default function ComplexStat() {
       };
     });
 
-    // Update state and Firestore
     setComplexes(updatedComplexes);
 
     try {
@@ -89,9 +79,8 @@ export default function ComplexStat() {
     }
   };
 
-  // Handle incrementing sold or not sold counts
   const handleOperation = (complex, field, increment) => {
-    const newComplexes = { ...complexes };
+    const newComplexes = {...complexes};
 
     if (increment) {
       newComplexes[complex][field] += 1;
@@ -106,56 +95,52 @@ export default function ComplexStat() {
     return <div className="user-main">Loading...</div>;
   }
 
-  return (
-    <section className="user-main">
-      <h1 className="user-main__title">{dateString}</h1>
-      <div className="user-main__table">
-        <div className="user-main__row user-main__header">
-          <p className="user-main__cell user-main__cell--title">Title</p>
-          <p className="user-main__cell two-buttons">Sold</p>
-          <p className="user-main__cell">NOT</p>
-          <p className="user-main__cell">Total</p>
-        </div>
-
-        {Object.entries(complexes).map(([complex, data]) => (
-          <div className="user-main__row" key={complex}>
-            <p className="user-main__cell user-main__cell--title">{complex}</p>
-            <div className="user-main__cell two-buttons-one">
-              <p className="user-main__count">{data.sold}</p>
-              <button
-                className="user-main__button"
-                onClick={() => handleOperation(complex, "sold", true)}
-              >
-                +
-              </button>
-              <button
-                className="user-main__button"
-                onClick={() => handleOperation(complex, "sold", false)}
-              >
-                -
-              </button>
-            </div>
-            <div className="user-main__cell one-button">
-              <p className="user-main__count">{data.not}</p>
-              <button
-                className="user-main__button"
-                onClick={() => handleOperation(complex, "not", true)}
-              >
-                +
-              </button>
-              <button
-                className="user-main__button"
-                onClick={() => handleOperation(complex, "not", false)}
-              >
-                -
-              </button>
-            </div>
-            <p className="user-main__cell">
-              {data.sum}
-            </p>
-          </div>
-        ))}
+return (
+  <section className="complex-stat">
+    <div className="complex-stat__table">
+      <div className="complex-stat__row complex-stat__header">
+        <p className="complex-stat__cell complex-stat__cell--title">Title</p>
+        <p className="complex-stat__cell two-buttons">Sold</p>
+        <p className="complex-stat__cell">NOT</p>
       </div>
-    </section>
-  );
+
+      {Object.entries(complexes).map(([complex, data]) => (
+        <div className="complex-stat__row" key={complex}>
+          <p className="complex-stat__cell complex-stat__cell--title">{complex}</p>
+          <div className="complex-stat__cell two-buttons-one">
+            <button
+              className="complex-stat__button"
+              onClick={() => handleOperation(complex, "sold", false)}
+            >
+              -
+            </button>
+            <p className="complex-stat__count">{data.sold}</p>
+            <button
+              className="complex-stat__button"
+              onClick={() => handleOperation(complex, "sold", true)}
+            >
+              +
+            </button>
+          </div>
+          <div className="complex-stat__cell one-button">
+            <button
+              className="complex-stat__button"
+              onClick={() => handleOperation(complex, "not", false)}
+            >
+              -
+            </button>
+            <p className="complex-stat__count">{data.not}</p>
+            <button
+              className="complex-stat__button"
+              onClick={() => handleOperation(complex, "not", true)}
+            >
+              +
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+);
+
 }

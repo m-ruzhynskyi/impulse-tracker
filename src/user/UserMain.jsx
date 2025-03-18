@@ -4,6 +4,7 @@ import { auth, db } from "../firebase/config";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { useDateRange } from "../hooks/useDateRange";
 import { formatDate, getRangeId } from "../functions/dateUtils";
+import ComplexStat from "../Components/ComplexStat";
 
 export default function UserMain() {
   const userEmail = auth.currentUser?.email.split("@")[0];
@@ -260,6 +261,7 @@ export default function UserMain() {
           </p>
         </div>
       )}
+      <ComplexStat/>
     </section>
   );
 }
