@@ -1,8 +1,8 @@
-.user-main {
+.complex-stat {
   padding: 20px;
 }
 
-.user-main__title {
+.complex-stat__title {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
@@ -11,7 +11,7 @@
 
 .two-buttons-one {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .one-button {
@@ -19,34 +19,34 @@
   justify-content: center;
 }
 
-.user-main__row {
+.complex-stat__row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 0.5fr 1fr 1fr;
   padding: 10px;
   align-items: center;
   border-bottom: 1px solid #ccc;
 }
 
-.user-main__header {
+.complex-stat__header {
   font-weight: bold;
   background-color: #f5f5f5;
 }
 
-.user-main__cell {
+.complex-stat__cell {
   text-align: center;
 }
 
 .two-buttons {
-  width: 95px;
+  width: 100% ;
 }
 
-.user-main__cell--title {
-  text-align: left;
+.complex-stat__cell--title {
   font-weight: bold;
-  width: 80px;
+  width: 100%;
+  text-align: center;
 }
 
-.user-main__button {
+.complex-stat__button {
   cursor: pointer;
   font-size: 18px;
   padding: 5px;
@@ -63,18 +63,18 @@
   border: none;
 }
 
-.user-main__button:hover {
+.complex-stat__button:hover {
   background-color: #0056b3;
 }
 
-.user-main__count {
+.complex-stat__count {
   font-size: 18px;
   display: inline-block;
   margin: 0 5px;
   width: 12px;
 }
 
-.user-totalSum {
+.complex-stat__totalSum {
   margin-top: 50px;
   font-size: 18px;
   font-family: 'PoppinsMedium', sans-serif;

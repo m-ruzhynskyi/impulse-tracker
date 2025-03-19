@@ -4,6 +4,7 @@ import {doc, getDoc, setDoc} from "firebase/firestore";
 import {auth, db} from "../firebase/config";
 
 export default function ComplexStat() {
+  // Format current date as DD-MM-YYYY
   const date = new Date();
   const dateString = `${date.getDate().toString().padStart(2, "0")}-${(
     date.getMonth() + 1
@@ -11,136 +12,161 @@ export default function ComplexStat() {
     .toString()
     .padStart(2, "0")}-${date.getFullYear()}`;
 
+  // State for complex data
   const [complexes, setComplexes] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
+  // Get user ID from email
   const userId = auth.currentUser?.email?.split("@")[0];
+
+  const todayDocRef = doc(db, "complexes", userId, "data", dateString);
 
   useEffect(() => {
     const initializeData = async () => {
-      if (!userId) return;
+      if (!userId) {
+        setIsLoading(false);
+        return;
+      }
 
-      setIsLoading(true);
       try {
-        const todayDocRef = doc(db, userId, 'complexes', 'data', dateString);
-        const todaySnapshot = await getDoc(todayDocRef);
+        // Reference to user's complexes for the current date
+        const docSnap = await getDoc(todayDocRef);
 
-        if (todaySnapshot.exists()) {
-          setComplexes(todaySnapshot.data());
+        let data;
+        if (docSnap.exists()) {
+          // Load existing data from Firebase
+          data = docSnap.data();
         } else {
-          const complexesDocRef = doc(db, 'info', 'complexes');
-          const complexesSnapshot = await getDoc(complexesDocRef);
-
-          if (complexesSnapshot.exists()) {
-            const complexData = complexesSnapshot.data();
-            const complexNames = {
-              [complexData.kp]: {sold: 0, not: 0, sum: "0%"},
-              [complexData.mn]: {sold: 0, not: 0, sum: "0%"},
-              [complexData.sp]: {sold: 0, not: 0, sum: "0%"}
-            };
-
-            await setDoc(todayDocRef, complexNames);
-            setComplexes(complexNames);
-          }
+          // Create initial data if it doesn’t exist
+          data = {
+            "КП": {sold: 0, not: 0},
+            "МН": {sold: 0, not: 0},
+            "СП": {sold: 0, not: 0},
+          };
+          await setDoc(todayDocRef, data);
         }
+
+        // Calculate sums for display
+        const complexesWithSums = {};
+        Object.entries(data).forEach(([complex, values]) => {
+          const total = values.sold + values.not;
+          const sumPercentage = total > 0 ? Math.round((values.sold / total) * 100) : 0;
+          complexesWithSums[complex] = {
+            ...values,
+            sum: `${sumPercentage}%`,
+          };
+        });
+
+        setComplexes(complexesWithSums);
       } catch (error) {
         console.error("Error initializing data:", error);
-      } finally {
-        setIsLoading(false);
       }
+      setIsLoading(false);
     };
 
     initializeData();
   }, [userId, dateString]);
 
-  const updateFirestore = async (newComplexes) => {
+  // Handle incrementing/decrementing sold or not counts and update Firebase
+  const handleOperation = async (complex, field, increment) => {
     if (!userId) return;
 
-    const updatedComplexes = {};
+    // Update local data
+    const newData = {...complexes};
+    if (increment) {
+      newData[complex][field] += 1;
+    } else {
+      newData[complex][field] = Math.max(0, newData[complex][field] - 1);
+    }
 
-    Object.entries(newComplexes).forEach(([complex, data]) => {
-      const total = data.sold + data.not;
-      const sumPercentage = total > 0 ? Math.round((data.sold / total) * 100) : 0;
-
-      updatedComplexes[complex] = {
-        sold: data.sold,
-        not: data.not,
-        sum: `${sumPercentage}%`
-      };
+    // Prepare data for Firebase (exclude sum)
+    const dataForFirebase = {};
+    Object.entries(newData).forEach(([comp, values]) => {
+      dataForFirebase[comp] = {sold: values.sold, not: values.not};
     });
 
-    setComplexes(updatedComplexes);
-
     try {
-      const complexDocRef = doc(db, userId, 'complexes', 'data', dateString);
-      await setDoc(complexDocRef, updatedComplexes);
+      // Update Firebase
+      await setDoc(todayDocRef, dataForFirebase);
+
+      // Calculate sums for display
+      const updatedComplexes = {};
+      Object.entries(dataForFirebase).forEach(([comp, values]) => {
+        const total = values.sold + values.not;
+        const sumPercentage = total > 0 ? Math.round((values.sold / total) * 100) : 0;
+        updatedComplexes[comp] = {
+          ...values,
+          sum: `${sumPercentage}%`,
+        };
+      });
+
+      // Update state
+      setComplexes(updatedComplexes);
     } catch (error) {
-      console.error("Error updating Firestore:", error);
+      console.error("Error updating data:", error);
     }
-  };
-
-  const handleOperation = (complex, field, increment) => {
-    const newComplexes = {...complexes};
-
-    if (increment) {
-      newComplexes[complex][field] += 1;
-    } else {
-      newComplexes[complex][field] = Math.max(0, newComplexes[complex][field] - 1);
-    }
-
-    updateFirestore(newComplexes);
   };
 
   if (isLoading) {
     return <div className="user-main">Loading...</div>;
   }
 
-return (
-  <section className="complex-stat">
-    <div className="complex-stat__table">
-      <div className="complex-stat__row complex-stat__header">
-        <p className="complex-stat__cell complex-stat__cell--title">Title</p>
-        <p className="complex-stat__cell two-buttons">Sold</p>
-        <p className="complex-stat__cell">NOT</p>
-      </div>
+  if (!userId) {
+    return <div className="user-main">Please log in to view your complexes.</div>;
+  }
 
-      {Object.entries(complexes).map(([complex, data]) => (
-        <div className="complex-stat__row" key={complex}>
-          <p className="complex-stat__cell complex-stat__cell--title">{complex}</p>
-          <div className="complex-stat__cell two-buttons-one">
-            <button
-              className="complex-stat__button"
-              onClick={() => handleOperation(complex, "sold", false)}
-            >
-              -
-            </button>
-            <p className="complex-stat__count">{data.sold}</p>
-            <button
-              className="complex-stat__button"
-              onClick={() => handleOperation(complex, "sold", true)}
-            >
-              +
-            </button>
-          </div>
-          <div className="complex-stat__cell one-button">
-            <button
-              className="complex-stat__button"
-              onClick={() => handleOperation(complex, "not", false)}
-            >
-              -
-            </button>
-            <p className="complex-stat__count">{data.not}</p>
-            <button
-              className="complex-stat__button"
-              onClick={() => handleOperation(complex, "not", true)}
-            >
-              +
-            </button>
-          </div>
+  if (Object.keys(complexes).length === 0) {
+    return <div className="user-main">No complex data available.</div>;
+  }
+
+  return (
+    <section className="complex-stat">
+      <div className="complex-stat__table">
+        <div className="complex-stat__row">
+          <p className="complex-stat__cell complex-stat__cell--title">Title</p>
+          <p className="complex-stat__cell two-buttons">Sold</p>
+          <p className="complex-stat__cell">NOT</p>
+          <p className="complex-stat__cell">Total</p>
         </div>
-      ))}
-    </div>
-  </section>
-);
+
+        {Object.entries(complexes).map(([complex, data]) => (
+          <div className="complex-stat__row" key={complex}>
+            <p className="complex-stat__cell complex-stat__cell--title">{complex}</p>
+            <div className="complex-stat__cell two-buttons-one">
+              <button
+                className="complex-stat__button"
+                onClick={() => handleOperation(complex, "sold", false)}
+              >
+                -
+              </button>
+              <p className="complex-stat__count">{data.sold}</p>
+              <button
+                className="complex-stat__button"
+                onClick={() => handleOperation(complex, "sold", true)}
+              >
+                +
+              </button>
+            </div>
+            <div className="complex-stat__cell one-button">
+              <button
+                className="complex-stat__button"
+                onClick={() => handleOperation(complex, "not", false)}
+              >
+                -
+              </button>
+              <p className="complex-stat__count">{data.not}</p>
+              <button
+                className="complex-stat__button"
+                onClick={() => handleOperation(complex, "not", true)}
+              >
+                +
+              </button>
+            </div>
+            <p className="complex-stat__cell">{data.sum}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
 
 }

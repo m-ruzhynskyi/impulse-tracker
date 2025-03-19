@@ -21,10 +21,14 @@
 
 .user-main__row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 0.5fr 1fr 1fr;
   padding: 10px;
   align-items: center;
   border-bottom: 1px solid #ccc;
+
+  @media screen and (max-width: 500px) {
+      grid-template-columns: 0.5fr 1fr 0.5fr;
+  }
 }
 
 .user-main__header {
@@ -41,9 +45,10 @@
 }
 
 .user-main__cell--title {
-  text-align: left;
+  text-align: center;
   font-weight: bold;
-  width: 80px;
+  width: 100%;
+  min-width: 80px;
 }
 
 .user-main__button {
