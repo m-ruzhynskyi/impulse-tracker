@@ -4,7 +4,6 @@ import {doc, getDoc, setDoc} from "firebase/firestore";
 import {auth, db} from "../firebase/config";
 
 export default function ComplexStat() {
-  // Format current date as DD-MM-YYYY
   const date = new Date();
   const dateString = `${date.getDate().toString().padStart(2, "0")}-${(
     date.getMonth() + 1
@@ -12,11 +11,9 @@ export default function ComplexStat() {
     .toString()
     .padStart(2, "0")}-${date.getFullYear()}`;
 
-  // State for complex data
   const [complexes, setComplexes] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
-  // Get user ID from email
   const userId = auth.currentUser?.email?.split("@")[0];
 
   const todayDocRef = doc(db, "complexes", userId, "data", dateString);
@@ -29,15 +26,12 @@ export default function ComplexStat() {
       }
 
       try {
-        // Reference to user's complexes for the current date
         const docSnap = await getDoc(todayDocRef);
 
         let data;
         if (docSnap.exists()) {
-          // Load existing data from Firebase
           data = docSnap.data();
         } else {
-          // Create initial data if it doesn’t exist
           data = {
             "КП": {sold: 0, not: 0},
             "МН": {sold: 0, not: 0},
@@ -46,14 +40,10 @@ export default function ComplexStat() {
           await setDoc(todayDocRef, data);
         }
 
-        // Calculate sums for display
         const complexesWithSums = {};
         Object.entries(data).forEach(([complex, values]) => {
-          const total = values.sold + values.not;
-          const sumPercentage = total > 0 ? Math.round((values.sold / total) * 100) : 0;
           complexesWithSums[complex] = {
             ...values,
-            sum: `${sumPercentage}%`,
           };
         });
 
@@ -67,11 +57,9 @@ export default function ComplexStat() {
     initializeData();
   }, [userId, dateString]);
 
-  // Handle incrementing/decrementing sold or not counts and update Firebase
   const handleOperation = async (complex, field, increment) => {
     if (!userId) return;
 
-    // Update local data
     const newData = {...complexes};
     if (increment) {
       newData[complex][field] += 1;
@@ -79,28 +67,21 @@ export default function ComplexStat() {
       newData[complex][field] = Math.max(0, newData[complex][field] - 1);
     }
 
-    // Prepare data for Firebase (exclude sum)
     const dataForFirebase = {};
     Object.entries(newData).forEach(([comp, values]) => {
       dataForFirebase[comp] = {sold: values.sold, not: values.not};
     });
 
     try {
-      // Update Firebase
       await setDoc(todayDocRef, dataForFirebase);
 
-      // Calculate sums for display
       const updatedComplexes = {};
       Object.entries(dataForFirebase).forEach(([comp, values]) => {
-        const total = values.sold + values.not;
-        const sumPercentage = total > 0 ? Math.round((values.sold / total) * 100) : 0;
         updatedComplexes[comp] = {
-          ...values,
-          sum: `${sumPercentage}%`,
+          ...values
         };
       });
 
-      // Update state
       setComplexes(updatedComplexes);
     } catch (error) {
       console.error("Error updating data:", error);

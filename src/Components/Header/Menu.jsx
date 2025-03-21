@@ -1,7 +1,7 @@
 import "../../styles/menu/manu.css";
 import menuController from "../../functions/menuController";
-import { getAuth, signOut } from "firebase/auth";
-import { NavLink, useNavigate } from "react-router-dom";
+import {getAuth, signOut} from "firebase/auth";
+import {NavLink, useNavigate} from "react-router-dom";
 
 export default function Menu() {
   const navigate = useNavigate();
@@ -46,6 +46,11 @@ export default function Menu() {
             <li>
               <NavLink to={"/stat"} onClick={() => menuController(true)}>
                 Статистика
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to={"/complexes"} onClick={() => menuController(true)}>
+                Комплекси
               </NavLink>
             </li>
             <li>
