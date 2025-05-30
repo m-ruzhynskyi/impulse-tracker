@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/user/settings/editAndUserController/editAndUserController.css";
-import { Button, Snackbar } from "@mui/material";
+import { Button, Snackbar, FormControlLabel, Switch } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { db } from "../../firebase/config";
 import { doc, setDoc, getDoc } from "firebase/firestore";
@@ -15,10 +15,12 @@ export default function ImpulseEdit() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [inputModeEnabled, setInputModeEnabled] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Fetch impulses data
         const impulseDocRef = doc(db, "info/impulse/data", "impulses");
         const impulseDoc = await getDoc(impulseDocRef);
 
@@ -29,6 +31,15 @@ export default function ImpulseEdit() {
             price,
           }));
           setImpulsesInfo(impulsesArray);
+        }
+
+        // Fetch input mode setting
+        const settingsDocRef = doc(db, "info/impulse/data", "settings");
+        const settingsDoc = await getDoc(settingsDocRef);
+
+        if (settingsDoc.exists()) {
+          const settings = settingsDoc.data();
+          setInputModeEnabled(settings.inputModeEnabled || false);
         }
       } catch (error) {
         console.error("Ошибка при загрузке данных:", error);
@@ -61,8 +72,13 @@ export default function ImpulseEdit() {
         return acc;
       }, {});
 
+      // Save impulses data
       const impulseDocRef = doc(db, "info/impulse/data", "impulses");
       await setDoc(impulseDocRef, dataToSave);
+
+      // Save input mode setting
+      const settingsDocRef = doc(db, "info/impulse/data", "settings");
+      await setDoc(settingsDocRef, { inputModeEnabled }, { merge: true });
 
       setSnackbarSeverity("success");
       setSnackbarMessage("Дані успішно збережено!");
@@ -81,6 +97,10 @@ export default function ImpulseEdit() {
       impulsesInfo.some((impulse) => !impulse.name || !impulse.price);
     setDisableButton(isDisabled);
   }, [impulsesInfo]);
+
+  const handleInputModeChange = (event) => {
+    setInputModeEnabled(event.target.checked);
+  };
 
   return (
     <div className="edit-form__wrapper">
@@ -106,6 +126,18 @@ export default function ImpulseEdit() {
               />
             </div>
           ))}
+        </div>
+        <div className="edit-form__setting-wrapper" style={{ marginBottom: '20px' }}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={inputModeEnabled}
+                onChange={handleInputModeChange}
+                color="primary"
+              />
+            }
+            label="Дозволити користувачам вводити ціну енергії на головній сторінці"
+          />
         </div>
         <div className="edit-form__button-wrapper">
           <Button

@@ -20,6 +20,9 @@ export default function UserMain() {
   const [totalSum, setTotalSum] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [inputModeEnabled, setInputModeEnabled] = useState(false);
+  const [customPrices, setCustomPrices] = useState({});
+  const [soldInputValues, setSoldInputValues] = useState({});
 
   const { quantOfDays, dayToStart, startDate, endDate } = useDateRange();
   const [factUpdated, setFactUpdated] = useState(false);
@@ -76,10 +79,14 @@ export default function UserMain() {
           const userData = docSnap.data();
           setProductCounts(userData.productCounts || {});
           setTotalSum(userData.totalSum || 0);
+          if (userData.customPrices) {
+            setCustomPrices(userData.customPrices);
+          }
         } else {
           const newUserData = {
             productCounts: initialProductState,
             totalSum: 0,
+            customPrices: {},
           };
           await setDoc(docRef, newUserData);
           setProductCounts(initialProductState);
@@ -92,20 +99,117 @@ export default function UserMain() {
     }
   };
 
+  const loadSettings = async () => {
+    try {
+      const settingsDocRef = doc(db, "info/impulse/data", "settings");
+      const settingsDoc = await getDoc(settingsDocRef);
+
+      if (settingsDoc.exists()) {
+        const settings = settingsDoc.data();
+        setInputModeEnabled(settings.inputModeEnabled || false);
+      }
+    } catch (error) {
+      console.error("Error loading settings:", error);
+    }
+  };
+
   useEffect(() => {
     const initializeData = async () => {
       const initialProductState = await loadProducts();
       await loadUserData(initialProductState);
+      await loadSettings();
     };
 
     initializeData();
     // eslint-disable-next-line
   }, []);
 
+  const handleCustomPriceChange = (productName, value) => {
+    const price = value === '' ? '' : parseInt(value, 10);
+    const updatedPrices = {
+      ...customPrices,
+      [productName]: price
+    };
+
+    // Update state with the new prices
+    setCustomPrices(updatedPrices);
+
+    // Create a temporary function to calculate sum with the updated prices
+    const calculateTempSum = () => {
+      return products.reduce((sum, product) => {
+        const count = productCounts[product.name] || 0;
+        const productPrice = product.name === productName 
+          ? (isNaN(price) ? 0 : price) 
+          : (updatedPrices[product.name] !== undefined 
+              ? (isNaN(updatedPrices[product.name]) ? 0 : updatedPrices[product.name]) 
+              : product.price);
+        return sum + count * productPrice;
+      }, 0);
+    };
+
+    // Recalculate total sum with the new price
+    const newSum = calculateTempSum();
+    setTotalSum(newSum);
+
+    // Update Firestore with the new prices and sum
+    updateFirestore(productCounts, newSum);
+  };
+
+  const handleSoldInputChange = (productName, value) => {
+    const soldValue = value === '' ? '' : parseInt(value, 10);
+    setSoldInputValues({
+      ...soldInputValues,
+      [productName]: soldValue
+    });
+  };
+
+  const handleAddSold = (productName) => {
+    const soldValue = soldInputValues[productName] || 0;
+    if (soldValue <= 0) return;
+
+    setProductCounts((prevCounts) => {
+      const currentCount = prevCounts[productName] || 0;
+      const product = products.find((p) => p.name === productName);
+
+      if (!product) return prevCounts;
+
+      const newCount = currentCount + soldValue;
+      const countChange = soldValue;
+
+      if (countChange !== 0) {
+        const price = inputModeEnabled && customPrices[productName] !== undefined 
+          ? (isNaN(customPrices[productName]) ? 0 : customPrices[productName]) 
+          : product.price;
+        updateFactInFirebase(countChange * price);
+      }
+
+      const updatedCounts = {
+        ...prevCounts,
+        [productName]: newCount,
+      };
+
+      const newSum = calculateSum(updatedCounts);
+      setTotalSum(newSum);
+
+      updateFirestore(updatedCounts, newSum);
+
+      // Reset the input field after adding
+      setSoldInputValues({
+        ...soldInputValues,
+        [productName]: ''
+      });
+
+      return updatedCounts;
+    });
+  };
+
   const calculateSum = (productCountsObj) => {
     return products.reduce((sum, product) => {
       const count = productCountsObj[product.name] || 0;
-      return sum + count * product.price;
+      const price = inputModeEnabled && customPrices[product.name] !== undefined 
+        ? customPrices[product.name] 
+        : product.price;
+      return sum + count * (isNaN(price) ? 0 : price);
     }, 0);
   };
 
@@ -159,6 +263,7 @@ export default function UserMain() {
         await updateDoc(docRef, {
           productCounts: updatedCounts,
           totalSum: newSum,
+          customPrices: inputModeEnabled ? customPrices : {},
         });
       } catch (error) {
         console.error("Error updating data:", error);
@@ -234,25 +339,48 @@ export default function UserMain() {
                 {product.name}
               </p>
               <div className="user-main__cell two-buttons">
-                <button
-                  className="user-main__button"
-                  onClick={() => handleOperation(product.name, false)}
-                >
-                  -
-                </button>
-                <p className="user-main__count">
-                  {productCounts[product.name] || 0}
-                </p>
-                <button
-                  className="user-main__button"
-                  onClick={() => handleOperation(product.name, true)}
-                >
-                  +
-                </button>
+                {!inputModeEnabled ? (
+                  <>
+                    <button
+                      className="user-main__button"
+                      onClick={() => handleOperation(product.name, false)}
+                    >
+                      -
+                    </button>
+                    <p className="user-main__count">
+                      {productCounts[product.name] || 0}
+                    </p>
+                    <button
+                      className="user-main__button"
+                      onClick={() => handleOperation(product.name, true)}
+                    >
+                      +
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <input
+                      type="number"
+                      className="user-main__sold-input"
+                      value={soldInputValues[product.name] || ''}
+                      onChange={(e) => handleSoldInputChange(product.name, e.target.value)}
+                    />
+                    <button
+                      className="user-main__button"
+                      onClick={() => handleAddSold(product.name)}
+                    >
+                      +
+                    </button>
+                  </>
+                )}
               </div>
-              <p className="user-main__cell">
-                {(productCounts[product.name] || 0) * product.price}₴
-              </p>
+              <div className="user-main__cell user-main__cell--sum">
+                {(productCounts[product.name] || 0) * 
+                  (inputModeEnabled && customPrices[product.name] !== undefined 
+                    ? (isNaN(customPrices[product.name]) ? 0 : customPrices[product.name]) 
+                    : product.price)
+                }₴
+              </div>
             </div>
           ))}
 

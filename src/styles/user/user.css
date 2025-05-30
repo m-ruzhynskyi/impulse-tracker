@@ -85,3 +85,17 @@
   font-family: 'PoppinsMedium', sans-serif;
   text-align: center;
 }
+
+.user-main__sold-input {
+  font-family: 'PoppinsMedium', sans-serif;
+  font-size: 18px;
+  width: 55px;
+  padding: 5px;
+  border-radius: 10px;
+  border: 1px solid var(--mainColorElement);
+  color: var(--mainColorText);
+}
+
+.user-main__cell--sum {
+  font-size: 18px;
+}

@@ -107,7 +107,6 @@ export default function ComplexStat() {
           <p className="complex-stat__cell complex-stat__cell--title">Title</p>
           <p className="complex-stat__cell two-buttons">Sold</p>
           <p className="complex-stat__cell">NOT</p>
-          <p className="complex-stat__cell">Total</p>
         </div>
 
         {Object.entries(complexes).map(([complex, data]) => (
